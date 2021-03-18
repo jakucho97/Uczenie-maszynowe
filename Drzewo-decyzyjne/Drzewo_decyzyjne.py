@@ -17,20 +17,33 @@ def reading(filename): #importowanie danych z pliku
             querry = querry.split(",")
             table.append(querry)
     return table
-    
 
-def countingattr(table): #liczenie możliwej wartosci każdego atrybutu
-    attributes={}
+def possiblevalues(table=[]):
+    possiblevalues = {}
+    table = list(zip(*table))
     i=0
-    while i<len(table[0]): 
-        temp=[]
-        for row in table:
-            for attribute in row[i:len(row):len(row)]:
-                temp.append(attribute)
-            temp=list(set(temp))
-        temp.insert(0,len(temp))
-        attributes["a"+str(i+1)]=temp      
+    for attr in table:
+        possiblevalues["a"+str(i+1)] = list(set(attr))
+        possiblevalues["a"+str(i+1)].insert(0,len(possiblevalues["a"+str(i+1)]))
         i+=1
-    return attributes
+    return possiblevalues
 
-print(countingattr(reading("gielda.txt")))
+def countedvalues(table=[]):
+    countedvalues={}
+    possiblevaslues = possiblevalues(table)
+    table = list(zip(*table))
+    
+    i = 0
+    for attr, values in possiblevaslues.items():
+        temp={}
+        for value in values[1:]:
+            temp[value]=table[i].count(value)
+        i+=1
+        countedvalues[attr]=temp
+        
+    return countedvalues
+
+    
+    
+    
+print(countedvalues(reading("gielda.txt")))
