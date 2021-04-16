@@ -6,10 +6,11 @@ Created on Wed Mar 17 02:12:50 2021
 """
 
 import os
+import math
 
 def reading(filename): #importowanie danych z pliku
     
-    os.chdir("E:/Pobrane/testGielda")
+    os.chdir("E:/Pobrane/")
     table=[]
     with open(filename,"r", encoding="utf-8" ) as file:
         for row in file:
@@ -18,19 +19,23 @@ def reading(filename): #importowanie danych z pliku
             table.append(querry)
     return table
 
-def possiblevalues(table=[]):
+def possiblevalues(filename):
     possiblevalues = {}
+    table=reading(filename)
     table = list(zip(*table))
     i=0
     for attr in table:
         possiblevalues["a"+str(i+1)] = list(set(attr))
         possiblevalues["a"+str(i+1)].insert(0,len(possiblevalues["a"+str(i+1)]))
         i+=1
+    possiblevalues["d"]=possiblevalues["a"+str(i)]
+    del possiblevalues["a"+str(i)]
     return possiblevalues
 
-def countedvalues(table=[]):
+def countedvalues(filename):
     countedvalues={}
-    possiblevaslues = possiblevalues(table)
+    possiblevaslues = possiblevalues(filename)
+    table = reading(filename)
     table = list(zip(*table))
     
     i = 0
@@ -43,7 +48,33 @@ def countedvalues(table=[]):
         
     return countedvalues
 
+def probability(filename):
+    problist=[]
+    counted=countedvalues(filename)['d']
+    sumd=sum(counted.values())
+    for x in counted.values():
+        problist.append(x/sumd)
+    return problist
+
+
+    
+def entropy(filename):
+    sump=0
+    probtable=probability(filename)
+    for x in probtable:
+        sump+=(x*math.log2(x))
+        
+    return -sump
+
     
     
+
+          
+
+print(probability("test.txt"))
+print(countedvalues("test.txt"))
+print(possiblevalues("test.txt"))
+print(entropy("test.txt"))
     
-print(countedvalues(reading("gielda.txt")))
+        
+
